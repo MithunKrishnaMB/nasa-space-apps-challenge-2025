@@ -1,30 +1,36 @@
-# --- CLEANED CODE - PLEASE COPY/PASTE THIS ENTIRE BLOCK ---
+# backend/app.py
 
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-import json
 
 app = Flask(__name__)
+# This is crucial to allow your React app (on a different port) to talk to the backend
 CORS(app) 
 
-@app.route('/api/test', methods=['GET'])
-def test_connection():
-    return jsonify({"message": "Hello from the Flask backend!"})
+@app.route('/analyse', methods=['POST'])
+def analyse_impact():
+    # Print the data received from the frontend to confirm it's working
+    print("Received data:", request.json)
 
-@app.route('/api/defend_advice', methods=['GET'])
-def get_defend_advice():
-    # This line will try to open the JSON file. 
-    # Make sure 'ai_knowledge_base.json' exists!
-    with open('ai_knowledge_base.json', 'r') as f:
-        simulations = json.load(f)
-
-    # Find the best outcome from our pre-computed data
-    best_simulation = max(simulations, key=lambda x: x['miss_distance'])
+    # For now, ignore the input and just return the pre-defined mock data
+    mock_response = {
+      "impact_summary": {
+        "total_economic_score": 8540.7,
+        "estimated_monetary_damage_usd": "1.2B"
+      },
+      "damage_radii_km": {
+        "crater": 0.9,
+        "thermal": 5.2,
+        "air_blast": 12.5,
+        "seismic": 8.0
+      },
+      "critical_infrastructure_affected": [
+          {"name": "Kochi International Airport", "type": "Airport", "damage": "Severe"},
+          {"name": "Vallarpadam Terminal", "type": "Port", "damage": "Moderate"}
+      ]
+    }
     
-    advice = f"Optimal deflection window is around {best_simulation['deflection_time']} hours from now with {best_simulation['deflection_force']} force for maximum effect."
+    return jsonify(mock_response)
 
-    return jsonify({"advice": advice})
-
-# This block will now execute correctly
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True)
