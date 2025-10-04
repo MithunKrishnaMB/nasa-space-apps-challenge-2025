@@ -16,13 +16,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.2.1",
-<<<<<<< HEAD
     "react-router-dom": "^6.23.1",
     "tsparticles": "^3.9.1"
-=======
-    "react-router-dom": "^6.30.1",
-    "tsparticles": "^3.4.0"
->>>>>>> d4d09f54c93e75decb0e5ea331f2e839f0c73a22
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0-alpha.13",
@@ -36,6 +31,6 @@
     "eslint-plugin-react-refresh": "^0.4.6",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
-    "vite": "^7.1.9"
+    "vite": "^5.2.0"
   }
 }
