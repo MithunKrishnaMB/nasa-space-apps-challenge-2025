@@ -1,0 +1,11 @@
+[
+  { "deflection_time": 4, "deflection_force": "low", "miss_distance": 50 },
+  { "deflection_time": 4, "deflection_force": "medium", "miss_distance": 120 },
+  { "deflection_time": 4, "deflection_force": "high", "miss_distance": 80 },
+  { "deflection_time": 8, "deflection_force": "low", "miss_distance": 200 },
+  { "deflection_time": 8, "deflection_force": "medium", "miss_distance": 500 },
+  { "deflection_time": 8, "deflection_force": "high", "miss_distance": 450 },
+  { "deflection_time": 12, "deflection_force": "low", "miss_distance": 150 },
+  { "deflection_time": 12, "deflection_force": "medium", "miss_distance": 350 },
+  { "deflection_time": 12, "deflection_force": "high", "miss_distance": 300 }
+]
