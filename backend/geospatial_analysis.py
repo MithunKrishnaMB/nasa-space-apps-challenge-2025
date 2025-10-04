@@ -10,7 +10,7 @@ import pandas as pd
 WORLDPOP_FILE_PATH = "data/ind_ppp_2020_UNadj_constrained.tif"
 # Reverted to a single file path as requested.
 # Ensure this filename is correct for your single downloaded tile.
-LANDCOVER_FILE_PATH = "data/43P_20200101-20210101 (1).tif"
+LANDCOVER_FILE_PATH = "data/43P_20200101-20210101.tif"
 
 INFRASTRUCTURE_SCORES = {
     'hospital': 5000,
@@ -145,8 +145,14 @@ def run_geospatial_analysis(target_coords, damage_radii):
     # --- 4. Calculate Total Score ---
     total_score = (infrastructure_score * 10) + (population_score * 0.1) + (land_use_score * 0.5)
 
+    # --- MODIFICATION: Return component scores for detailed economic modeling ---
     return {
         "total_score": round(total_score, 2),
+        "component_scores": {
+            "infrastructure": infrastructure_score,
+            "population": population_score,
+            "land_use": land_use_score
+        },
         "affected_infrastructure": affected_infrastructure
     }
 
@@ -154,22 +160,22 @@ def run_geospatial_analysis(target_coords, damage_radii):
 # --- Testing Block ---
 if __name__ == '__main__':
     # We need to import physics_model to use its function
-    from physics_model import calculate_damage_radii
+    from physics_model import calculate_damage_radii # Assumes physics_model returns the structure {"radii": {...}, ...}
 
     print("--- Running Geospatial Analysis Model Test ---")
     print("\n--- Using a smaller 50m impactor for a fast validation run ---")
 
-    test_target = {"lat": 9.9312, "lon": 76.2673}
+    test_target = {"lat": 9.9312, "lon": 76.2673} # Kochi, India
 
-    # Using teammate's keyword argument style for the function call
-    # This assumes your physics_model.py has also been updated to accept keywords
-    test_radii_small = calculate_damage_radii(
+    # Fetch the results from the physics model
+    physics_output = calculate_damage_radii(
         diameter_m=50,
         density_kg_m3=3000,
         velocity_kms=20,
         angle_deg=45,
         target_type='sedimentary rock'
     )
+    test_radii_small = physics_output['radii'] # Extract the radii dictionary
 
     print(f"\nAnalyzing impact for target: Kochi with thermal radius {test_radii_small['thermal']:.2f} km")
 
@@ -177,6 +183,7 @@ if __name__ == '__main__':
 
     print("\n--- TEST RESULTS ---")
     print(f"Total Economic Score: {results['total_score']}")
+    print(f"Component Scores: {results['component_scores']}") # Print new component scores
     print("Affected Infrastructure:")
     if results['affected_infrastructure']:
         for item in results['affected_infrastructure']:

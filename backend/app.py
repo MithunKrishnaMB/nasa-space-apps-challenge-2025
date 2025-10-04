@@ -5,10 +5,10 @@ from flask_cors import CORS
 from asteroid_data import FAMOUS_ASTEROIDS
 from physics_model import calculate_damage_radii
 from geospatial_analysis import run_geospatial_analysis
+from economic_model import calculate_monetary_damage # <-- IMPORT THE NEW FUNCTION
 
 # --- Flask App Initialization ---
 app = Flask(__name__)
-# Enable Cross-Origin Resource Sharing to allow the frontend to connect
 CORS(app)
 
 # --- API Endpoints ---
@@ -40,27 +40,33 @@ def analyse_impact():
             density = asteroid['density_kg_m3']
         else:
             diameter = data['diameter']
-            density = data.get('density', 3000) # Use a default density if not provided
+            density = data.get('density', 3000)
 
         velocity = data['velocity']
         angle = data['angle']
         target_coords = data['target']
 
         # --- 2. Run the Physics Model ---
-        damage_radii = calculate_damage_radii(
+        # The function now returns a dictionary with 'radii' and 'energy_joules'
+        physics_results = calculate_damage_radii(
             diameter, density, velocity, angle, 'sedimentary rock'
         )
+        damage_radii = physics_results['radii']
+        kinetic_energy = physics_results['energy_joules']
 
         # --- 3. Run the Geospatial Economic Analysis ---
         economic_results = run_geospatial_analysis(target_coords, damage_radii)
 
-        # --- 4. Format and Return the Final Response ---
+        # --- 4. Run the NEW Economic Damage Model ---
+        estimated_damage_usd = calculate_monetary_damage(economic_results, kinetic_energy)
+
+        # --- 5. Format and Return the Final Response ---
         response = {
             "impact_summary": {
                 "total_economic_score": economic_results['total_score'],
-                "estimated_monetary_damage_usd": "Calculation TBD"
+                "estimated_monetary_damage_usd": estimated_damage_usd # <-- USE THE CALCULATED VALUE
             },
-            "damage_radii_km": damage_radii,
+            "damage_radii_km": damage_radii, # <-- Use the nested radii dict
             "critical_infrastructure_affected": economic_results['affected_infrastructure']
         }
         
@@ -72,6 +78,4 @@ def analyse_impact():
 
 # --- Main execution block ---
 if __name__ == '__main__':
-    # Runs the Flask development server
     app.run(debug=True, port=5000)
-
