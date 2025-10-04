@@ -1,0 +1,15 @@
+# Git Ignore for Project Impact Horizon
+
+# Ignore Python virtual environments
+/backend/venv/
+/backend/nasa-hackathon/
+
+# CRITICAL: Ignore large data and cache files
+/backend/data/
+/backend/cache/
+
+# Ignore Node.js dependencies
+/frontend/node_modules/
+
+# Ignore common OS files
+.DS_Store
