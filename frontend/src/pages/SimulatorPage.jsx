@@ -1,3 +1,6 @@
+const API_URL = import.meta.env.VITE_PUBLIC_API_URL;
+
+
 import React, { useState, useEffect, useRef } from "react";
 import {
   MapContainer,
@@ -136,7 +139,7 @@ export default function SimulatorPage() {
   useEffect(() => {
     async function fetchAsteroids() {
       try {
-        const response = await fetch("http://127.0.0.1:5000/asteroids");
+        const response = await fetch("${API_URL}/asteroids");
         if (!response.ok) throw new Error("Failed to fetch asteroids");
         const data = await response.json();
         setAsteroids(data);
@@ -168,7 +171,7 @@ export default function SimulatorPage() {
     else payload.asteroid_id = selectedAsteroid;
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/analyse", {
+      const response = await fetch("${API_URL}/analyse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
