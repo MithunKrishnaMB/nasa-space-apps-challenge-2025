@@ -19,6 +19,7 @@ import {
   Waves,
   ChevronsRight,
   RefreshCcw,
+  Swords, // Icon for the game toggle
 } from "lucide-react";
 
 // --- Leaflet Icon Fix ---
@@ -126,6 +127,9 @@ export default function SimulatorPage() {
   const [showRefresh, setShowRefresh] = useState(false);
   const controllerRef = useRef(null);
 
+  // --- NEW: State to toggle between simulator and game ---
+  const [viewMode, setViewMode] = useState("simulator"); // 'simulator' or 'game'
+
   const isCustomScenario = selectedAsteroid === "custom";
 
   // Fetch asteroid list
@@ -213,217 +217,294 @@ export default function SimulatorPage() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-50 text-gray-800 font-sans">
-      <div className="w-full md:w-1/3 p-6 bg-white border-r border-gray-200 shadow-xl z-10 overflow-y-auto">
-        <h1 className="text-2xl font-bold">IMPACT HORIZON</h1>
-        <p className="text-gray-500 mb-8 text-sm">Asteroid Impact Simulator</p>
+    <div className="h-screen bg-gray-50 text-gray-800 font-sans">
+      {/* --- Conditional Rendering based on viewMode --- */}
 
-        {/* Scenario Selection */}
-        <div className="space-y-6">
-          <div>
-            <label
-              htmlFor="scenario"
-              className="text-sm font-medium text-gray-600 mb-1"
-            >
-              Select Scenario
-            </label>
-            <select
-              id="scenario"
-              value={selectedAsteroid}
-              onChange={(e) => setSelectedAsteroid(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="custom">Custom Impactor</option>
-              {asteroids.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name}
-                </option>
-              ))}
-            </select>
-          </div>
+      {viewMode === "simulator" ? (
+        // --- SIMULATOR VIEW ---
+        <div className="flex flex-col md:flex-row h-full">
+          <div className="w-full md:w-1/3 p-6 bg-white border-r border-gray-200 shadow-xl z-10 overflow-y-auto">
+            <h1 className="text-2xl font-bold">IMPACT HORIZON</h1>
+            <p className="text-gray-500 mb-4 text-sm">
+              Asteroid Impact Simulator
+            </p>
 
-          {/* Custom Controls */}
-          <div
-            className={`space-y-6 transition-opacity duration-300 ${
-              isCustomScenario ? "opacity-100" : "opacity-40"
-            }`}
-          >
-            <h2
-              className={`flex items-center text-sm font-medium text-gray-400 ${
-                isCustomScenario ? "" : "line-through"
-              }`}
-            >
-              <ChevronsRight className="w-4 h-4 mr-1" /> Custom Parameters
-            </h2>
-
-            <div>
-              <label
-                htmlFor="size"
-                className="flex justify-between text-sm font-medium text-gray-600 mb-1"
+            {/* --- VIEW TOGGLE BUTTONS --- */}
+            <div className="flex justify-center mb-6">
+              <button
+                onClick={() => setViewMode("simulator")}
+                className="px-4 py-2 rounded-l-lg text-sm font-medium transition w-1/2 flex items-center justify-center bg-gray-800 text-white shadow-md"
               >
-                <span>Asteroid Size</span>
-                <span className="font-mono text-blue-600">
-                  {asteroidSize} m
-                </span>
-              </label>
-              <input
-                id="size"
-                type="range"
-                min="10"
-                max="1000"
-                step="10"
-                value={asteroidSize}
-                onChange={(e) => setAsteroidSize(parseInt(e.target.value))}
-                disabled={!isCustomScenario}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 disabled:accent-gray-300"
-              />
+                Simulator
+              </button>
+              <button
+                onClick={() => setViewMode("game")}
+                className="px-4 py-2 rounded-r-lg text-sm font-medium transition w-1/2 flex items-center justify-center bg-gray-200 text-gray-600 hover:bg-gray-300"
+              >
+                <Swords className="w-4 h-4 mr-2" />
+                Play Game
+              </button>
             </div>
+
+            {/* Scenario Selection */}
+            <div className="space-y-6">
+              <div>
+                <label
+                  htmlFor="scenario"
+                  className="text-sm font-medium text-gray-600 mb-1"
+                >
+                  Select Scenario
+                </label>
+                <select
+                  id="scenario"
+                  value={selectedAsteroid}
+                  onChange={(e) => setSelectedAsteroid(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="custom">Custom Impactor</option>
+                  {asteroids.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Custom Controls */}
+              <div
+                className={`space-y-6 transition-opacity duration-300 ${
+                  isCustomScenario ? "opacity-100" : "opacity-40"
+                }`}
+              >
+                <h2
+                  className={`flex items-center text-sm font-medium text-gray-400 ${
+                    isCustomScenario ? "" : "line-through"
+                  }`}
+                >
+                  <ChevronsRight className="w-4 h-4 mr-1" /> Custom Parameters
+                </h2>
+
+                <div>
+                  <label
+                    htmlFor="size"
+                    className="flex justify-between text-sm font-medium text-gray-600 mb-1"
+                  >
+                    <span>Asteroid Size</span>
+                    <span className="font-mono text-blue-600">
+                      {asteroidSize} m
+                    </span>
+                  </label>
+                  <input
+                    id="size"
+                    type="range"
+                    min="10"
+                    max="1000"
+                    step="10"
+                    value={asteroidSize}
+                    onChange={(e) => setAsteroidSize(parseInt(e.target.value))}
+                    disabled={!isCustomScenario}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 disabled:accent-gray-300"
+                  />
+                </div>
+              </div>
+
+              {/* Shared Controls */}
+              <div>
+                <label
+                  htmlFor="velocity"
+                  className="flex justify-between text-sm font-medium text-gray-600 mb-1"
+                >
+                  <span>Impact Velocity</span>
+                  <span className="font-mono text-blue-600">
+                    {asteroidVelocity} km/s
+                  </span>
+                </label>
+                <input
+                  id="velocity"
+                  type="range"
+                  min="10"
+                  max="70"
+                  step="1"
+                  value={asteroidVelocity}
+                  onChange={(e) =>
+                    setAsteroidVelocity(parseInt(e.target.value))
+                  }
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="angle"
+                  className="flex justify-between text-sm font-medium text-gray-600 mb-1"
+                >
+                  <span>Impact Angle</span>
+                  <span className="font-mono text-blue-600">
+                    {impactAngle}°
+                  </span>
+                </label>
+                <input
+                  id="angle"
+                  type="range"
+                  min="15"
+                  max="90"
+                  step="1"
+                  value={impactAngle}
+                  onChange={(e) => setImpactAngle(parseInt(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                />
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-10 flex flex-col gap-3">
+              {!isLoading && (
+                <button
+                  onClick={handleSimulate}
+                  className="w-full py-3 bg-gray-800 hover:bg-black rounded-lg text-white font-bold transition duration-300 shadow-md flex items-center justify-center"
+                >
+                  ANALYZE IMPACT
+                </button>
+              )}
+
+              {isLoading && (
+                <button
+                  onClick={handleCancel}
+                  className="w-full py-3 bg-red-600 hover:bg-red-700 rounded-lg text-white font-bold transition duration-300 shadow-md flex items-center justify-center"
+                >
+                  <LoaderCircle className="w-5 h-5 mr-2 animate-spin" />
+                  CANCEL ASSESSMENT
+                </button>
+              )}
+
+              {showRefresh && !isLoading && (
+                <button
+                  onClick={handleRefresh}
+                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-bold transition duration-300 shadow-md flex items-center justify-center"
+                >
+                  <RefreshCcw className="w-5 h-5 mr-2" /> REFRESH
+                </button>
+              )}
+            </div>
+
+            {error && (
+              <div className="mt-4 p-3 bg-red-100 text-red-700 text-sm rounded-lg flex items-center">
+                <ServerCrash className="w-5 h-5 mr-2" /> {error}
+              </div>
+            )}
+
+            <ResultsDisplay results={results} />
           </div>
 
-          {/* Shared Controls */}
-          <div>
-            <label
-              htmlFor="velocity"
-              className="flex justify-between text-sm font-medium text-gray-600 mb-1"
+          {/* Map Section */}
+          <div className="w-full md:w-2/3 h-full">
+            <MapContainer
+              center={[targetPosition.lat, targetPosition.lng]}
+              zoom={7}
+              scrollWheelZoom={true}
+              style={{ height: "100%", width: "100%" }}
             >
-              <span>Impact Velocity</span>
-              <span className="font-mono text-blue-600">
-                {asteroidVelocity} km/s
-              </span>
-            </label>
-            <input
-              id="velocity"
-              type="range"
-              min="10"
-              max="70"
-              step="1"
-              value={asteroidVelocity}
-              onChange={(e) => setAsteroidVelocity(parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-            />
-          </div>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <MapClickHandler
+                setTargetPosition={setTargetPosition}
+                resetMarkerIcon={resetMarkerIcon}
+              />
 
-          <div>
-            <label
-              htmlFor="angle"
-              className="flex justify-between text-sm font-medium text-gray-600 mb-1"
-            >
-              <span>Impact Angle</span>
-              <span className="font-mono text-blue-600">{impactAngle}°</span>
-            </label>
-            <input
-              id="angle"
-              type="range"
-              min="15"
-              max="90"
-              step="1"
-              value={impactAngle}
-              onChange={(e) => setImpactAngle(parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-            />
+              <Marker
+                key={`${targetPosition.lat}-${targetPosition.lng}-${currentMarkerIcon.options.iconUrl}`}
+                position={[targetPosition.lat, targetPosition.lng]}
+                icon={currentMarkerIcon}
+              >
+                <Popup>Impact Target</Popup>
+              </Marker>
+
+              {results && (
+                <>
+                  <Circle
+                    center={[targetPosition.lat, targetPosition.lng]}
+                    radius={results.damage_radii_km.air_blast * 1000}
+                    pathOptions={{
+                      color: "cyan",
+                      fillColor: "cyan",
+                      fillOpacity: 0.2,
+                    }}
+                  />
+                  <Circle
+                    center={[targetPosition.lat, targetPosition.lng]}
+                    radius={results.damage_radii_km.thermal * 1000}
+                    pathOptions={{
+                      color: "orange",
+                      fillColor: "orange",
+                      fillOpacity: 0.2,
+                    }}
+                  />
+                  <Circle
+                    center={[targetPosition.lat, targetPosition.lng]}
+                    radius={results.damage_radii_km.crater * 1000}
+                    pathOptions={{
+                      color: "red",
+                      fillColor: "red",
+                      fillOpacity: 0.3,
+                    }}
+                  />
+                </>
+              )}
+            </MapContainer>
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="mt-10 flex flex-col gap-3">
-          {!isLoading && (
-            <button
-              onClick={handleSimulate}
-              className="w-full py-3 bg-gray-800 hover:bg-black rounded-lg text-white font-bold transition duration-300 shadow-md flex items-center justify-center"
-            >
-              ANALYZE IMPACT
-            </button>
-          )}
-
-          {isLoading && (
-            <button
-              onClick={handleCancel}
-              className="w-full py-3 bg-red-600 hover:bg-red-700 rounded-lg text-white font-bold transition duration-300 shadow-md flex items-center justify-center"
-            >
-              <LoaderCircle className="w-5 h-5 mr-2 animate-spin" />
-              CANCEL ASSESSMENT
-            </button>
-          )}
-
-          {showRefresh && !isLoading && (
-            <button
-              onClick={handleRefresh}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-bold transition duration-300 shadow-md flex items-center justify-center"
-            >
-              <RefreshCcw className="w-5 h-5 mr-2" /> REFRESH
-            </button>
-          )}
-        </div>
-
-        {error && (
-          <div className="mt-4 p-3 bg-red-100 text-red-700 text-sm rounded-lg flex items-center">
-            <ServerCrash className="w-5 h-5 mr-2" /> {error}
+      ) : (
+        // --- GAME VIEW ---
+        <div className="flex flex-col items-center justify-center h-full bg-gray-900 p-4 text-white">
+          <div className="w-full max-w-4xl text-center">
+            <h1 className="text-4xl font-bold">Astro-Platformer</h1>
+            <p className="text-gray-300 my-4">
+              Use{" "}
+              <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg">
+                ←
+              </kbd>
+              <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg">
+                →
+              </kbd>{" "}
+              keys to move,{" "}
+              <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg">
+                ↑
+              </kbd>{" "}
+              to jump, and{" "}
+              <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg">
+                SPACE
+              </kbd>{" "}
+              to shoot!
+            </p>
           </div>
-        )}
 
-        <ResultsDisplay results={results} />
-      </div>
-
-      {/* Map Section */}
-      <div className="w-full md:w-2/3 h-full">
-        <MapContainer
-          center={[targetPosition.lat, targetPosition.lng]}
-          zoom={7}
-          scrollWheelZoom={true}
-          style={{ height: "100%", width: "100%" }}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <MapClickHandler
-            setTargetPosition={setTargetPosition}
-            resetMarkerIcon={resetMarkerIcon}
-          />
-
-          {/* Marker with dynamic icon */}
-          <Marker
-            key={`${targetPosition.lat}-${targetPosition.lng}-${currentMarkerIcon.options.iconUrl}`}
-            position={[targetPosition.lat, targetPosition.lng]}
-            icon={currentMarkerIcon}
+          <div
+            id="game-container"
+            className="w-[800px] h-[600px] mx-auto border-2 border-cyan-400 bg-black rounded-lg shadow-2xl shadow-cyan-500/20"
           >
-            <Popup>Impact Target</Popup>
-          </Marker>
+            {/* ========= CHANGE: Use <script> tag for config ========= */}
+            <script type="py-config">
+              {`
+                [[fetch]]
+                files = ["./game/main.py", "./game/assets/player.png", "./game/assets/asteroid.png", "./game/assets/bullet.png", "./game/assets/background.png"]
 
-          {/* Damage circles */}
-          {results && (
-            <>
-              <Circle
-                center={[targetPosition.lat, targetPosition.lng]}
-                radius={results.damage_radii_km.air_blast * 1000}
-                pathOptions={{
-                  color: "cyan",
-                  fillColor: "cyan",
-                  fillOpacity: 0.2,
-                }}
-              />
-              <Circle
-                center={[targetPosition.lat, targetPosition.lng]}
-                radius={results.damage_radii_km.thermal * 1000}
-                pathOptions={{
-                  color: "orange",
-                  fillColor: "orange",
-                  fillOpacity: 0.2,
-                }}
-              />
-              <Circle
-                center={[targetPosition.lat, targetPosition.lng]}
-                radius={results.damage_radii_km.crater * 1000}
-                pathOptions={{
-                  color: "red",
-                  fillColor: "red",
-                  fillOpacity: 0.3,
-                }}
-              />
-            </>
-          )}
-        </MapContainer>
-      </div>
+                [packages]
+                pygame-ce = "2.5.0"
+              `}
+            </script>
+            <py-script src="./game/main.py" output="game-container"></py-script>
+          </div>
+
+          <button
+            onClick={() => setViewMode("simulator")}
+            className="mt-6 px-6 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-md"
+          >
+            Back to Simulator
+          </button>
+        </div>
+      )}
     </div>
   );
 }
