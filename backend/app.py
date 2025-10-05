@@ -86,20 +86,33 @@ def analyse_impact():
         return jsonify({"error": "An internal server error occurred during analysis."}), 500
 
 # --- Frontend Route ---
-@app.route('/')
-def index():
-    # This is a simple health check endpoint
-    return {"status": "ok", "message": "NASA Space Apps API is running!"}
+# @app.route('/')
+# def index():
+#     # This is a simple health check endpoint
+#     return {"status": "ok", "message": "NASA Space Apps API is running!"}
+# @app.route('/<path:path>')
+# def serve_frontend(path=None):
+#     """
+#     Serves the React frontend from the dist folder.
+#     """
+#     static_folder = app.static_folder
+#     if path and os.path.exists(os.path.join(static_folder, path)):
+#         return send_from_directory(static_folder, path)
+#     else:
+#         return send_from_directory(static_folder, 'index.html')
+
+@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-def serve_frontend(path=None):
+def serve_react_app(path):
     """
-    Serves the React frontend from the dist folder.
+    Serves the React application.
+    - If the path is a file, it serves the file.
+    - Otherwise, it serves index.html to let React Router handle the route.
     """
-    static_folder = app.static_folder
-    if path and os.path.exists(os.path.join(static_folder, path)):
-        return send_from_directory(static_folder, path)
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
     else:
-        return send_from_directory(static_folder, 'index.html')
+        return send_from_directory(app.static_folder, 'index.html')
 
 # --- Main execution block ---
 if __name__ == '__main__':
