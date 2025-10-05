@@ -8,7 +8,7 @@ from geospatial_analysis import run_geospatial_analysis
 from economic_model import calculate_monetary_damage  # <-- NEW FUNCTION
 
 # --- Flask App Initialization ---
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../frontend/dist', static_url_path='/')
 CORS(app)
 
 # --- API Endpoints ---
@@ -83,9 +83,27 @@ def analyse_impact():
 
     except Exception as e:
         print(f"An error occurred during analysis: {e}")
+<<<<<<< HEAD
         import traceback
         traceback.print_exc()
         return jsonify({"error": "An internal server error occurred."}), 500
+=======
+        return jsonify({"error": "An internal server error occurred during analysis."}), 500
+
+# --- Frontend Route ---
+@app.route('/')
+@app.route('/<path:path>')
+def serve_frontend(path=None):
+    """
+    Serves the React frontend from the dist folder.
+    """
+    static_folder = app.static_folder
+    if path and os.path.exists(os.path.join(static_folder, path)):
+        return send_from_directory(static_folder, path)
+    else:
+        return send_from_directory(static_folder, 'index.html')
+
+>>>>>>> a0ac256ebbbb6be0d89a3dd8c6ec19a406ad8e65
 # --- Main execution block ---
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
