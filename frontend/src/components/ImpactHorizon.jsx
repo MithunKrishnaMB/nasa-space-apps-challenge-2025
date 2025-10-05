@@ -86,24 +86,6 @@ const ImpactHorizon = forwardRef((props, ref) => {
     return new THREE.Vector3(x, y, z);
   };
 
-  // Function to add an impact marker (e.g., a small brown sphere)
-  const addImpactMarker = (
-    scene,
-    lat,
-    lon,
-    radius = 1.5,
-    size = 0.05,
-    color = 0x8b4513
-  ) => {
-    // Brown color
-    const position = latLonToCartesian(lat, lon, radius);
-    const markerGeometry = new THREE.SphereGeometry(size, 16, 16);
-    const markerMaterial = new THREE.MeshBasicMaterial({ color: color });
-    const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-    marker.position.copy(position);
-    scene.add(marker);
-  };
-
   // === Setup Scene ===
   const initScene = () => {
     const container = containerRef.current;
@@ -147,11 +129,6 @@ const ImpactHorizon = forwardRef((props, ref) => {
     createShootingStars(scene);
     createCelestials(scene);
     createEarth(scene);
-
-    // Add impact markers with brown color
-    impacts.forEach((impact) => {
-      addImpactMarker(scene, impact.lat, impact.lon, 1.5, 0.05, 0x8b4513); // Brown
-    });
 
     startIntroAnimation(camera, controls);
 
