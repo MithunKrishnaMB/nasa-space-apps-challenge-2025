@@ -3,8 +3,8 @@ import Particles, { initParticlesEngine } from "@tsparticles/react";
 // Reverting to the known-good 'loadFull' engine
 import { loadFull } from "tsparticles"; 
 
-// The component is still named ThreeScene to match the import in LandingPage.jsx
-export default function ThreeScene() {
+// The component is named InteractiveBackground to match the file
+export default function InteractiveBackground() {
     const [init, setInit] = useState(false);
 
     // This effect runs once to initialize the engine
@@ -26,7 +26,7 @@ export default function ThreeScene() {
             },
             background: {
                 color: {
-                    value: '#ffffff', // The final white background
+                    value: '#000000', // Black background for space look
                 },
             },
             fpsLimit: 120,
@@ -50,7 +50,13 @@ export default function ThreeScene() {
                     type: 'circle',
                 },
                 color: {
-                    value: '#000000', // High-contrast black particles
+                    value: '#ffffff', // White particles (stars/asteroids)
+                },
+                // NEW: Add a soft white shadow for the "shady fill" effect
+                shadow: {
+                    enable: true,
+                    blur: 10,
+                    color: "#ffffff" // Soft white glow
                 },
                 links: {
                     enable: false,
@@ -70,14 +76,24 @@ export default function ThreeScene() {
                         enable: true,
                         area: 800,
                     },
-                    value: 80, // A good number of particles
+                    value: 120, // Increased number for better star coverage
                 },
                 opacity: {
-                    value: 0.5, // A little softer than pure black
+                    // Slight opacity change for the core circle
+                    value: { min: 0.3, max: 0.8 }, 
                 },
                 size: {
-                    value: { min: 1, max: 5 }, // Small, subtle circles
+                    // Use a range for varied sizes
+                    value: { min: 1, max: 3 }, 
+                    random: true,
+                    animation: {
+                        enable: true,
+                        speed: 2,
+                        minimumValue: 0.5,
+                        sync: false,
+                    }
                 },
+                // REMOVED: wobble and life properties for the smooth shadow effect
             },
             detectRetina: true,
         }),
@@ -90,4 +106,3 @@ export default function ThreeScene() {
 
     return <></>; // Render nothing while initializing
 };
-

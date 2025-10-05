@@ -12,14 +12,15 @@ FAMOUS_ASTEROIDS = {
         "diameter_m": 490,
         "density_kg_m3": 1190, # C-type, very low density "rubble pile"
     },
-    "433_eros": {
-        "name": "433 Eros (First NEAR Shoemaker Target)",
-        "diameter_m": 16800, # 16.8km, much larger
-        "density_kg_m3": 2670, # S-type
+    "25143_itokawa": {
+        "name": "25143 Itokawa (Hayabusa Target)",
+        "diameter_m": 535, # Average diameter
+        "density_kg_m3": 1900, # S-type
     },
-    "4179_toutatis": {
-        "name": "4179 Toutatis (Slow Rotator)",
-        "diameter_m": 2500, # 2.5km
-        "density_kg_m3": 2100, # S-type
+    "162173_ryugu": {
+        "name": "162173 Ryugu (Hayabusa2 Target)",
+        "diameter_m": 900,
+        "density_kg_m3": 1190, # C-type rubble pile
     }
+
 }
