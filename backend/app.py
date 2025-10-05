@@ -87,6 +87,9 @@ def analyse_impact():
 
 # --- Frontend Route ---
 @app.route('/')
+def index():
+    # This is a simple health check endpoint
+    return {"status": "ok", "message": "NASA Space Apps API is running!"}
 @app.route('/<path:path>')
 def serve_frontend(path=None):
     """
