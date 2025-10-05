@@ -139,20 +139,15 @@ export default function SimulatorPage() {
 useEffect(() => {
   async function fetchAsteroids() {
     try {
-      const response = await fetch(`${API_URL}/asteroids`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          // replace with whatever data you want to send to backend
-          query: "near_earth_objects",
-        }),
-      });
+      // THIS IS THE LINE TO FIX: Ensure it's a simple GET request.
+      const response = await fetch(`${API_URL}/asteroids`);
 
-      if (!response.ok) throw new Error("Failed to fetch asteroids");
+      if (!response.ok) {
+        throw new Error("Failed to fetch asteroids");
+      }
       const data = await response.json();
-      setAsteroids(data);
+      setAsteroids(data); // This will populate your dropdown
+      
     } catch (e) {
       console.error(e);
     }
