@@ -95,8 +95,8 @@ export default function LandingPage() {
         </div>
 
         {/* Scroll hint */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-gray-400 z-20">
-          <p className="mb-2 text-sm">Scroll to Continue</p>
+        <div className="absolute bottom-10  -translate-x-1/2 animate-bounce text-gray-400 z-20">
+          <p className="mb-2  text-sm">Scroll to Continue</p>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
