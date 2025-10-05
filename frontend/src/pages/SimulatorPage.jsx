@@ -228,24 +228,7 @@ export default function SimulatorPage() {
             <p className="text-gray-500 mb-4 text-sm">
               Asteroid Impact Simulator
             </p>
-
-            {/* --- VIEW TOGGLE BUTTONS --- */}
-            <div className="flex justify-center mb-6">
-              <button
-                onClick={() => setViewMode("simulator")}
-                className="px-4 py-2 rounded-l-lg text-sm font-medium transition w-1/2 flex items-center justify-center bg-gray-800 text-white shadow-md"
-              >
-                Simulator
-              </button>
-              <button
-                onClick={() => setViewMode("game")}
-                className="px-4 py-2 rounded-r-lg text-sm font-medium transition w-1/2 flex items-center justify-center bg-gray-200 text-gray-600 hover:bg-gray-300"
-              >
-                <Swords className="w-4 h-4 mr-2" />
-                Play Game
-              </button>
-            </div>
-
+            
             {/* Scenario Selection */}
             <div className="space-y-6">
               <div>
