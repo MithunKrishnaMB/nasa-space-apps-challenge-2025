@@ -136,19 +136,31 @@ export default function SimulatorPage() {
   const isCustomScenario = selectedAsteroid === "custom";
 
   // Fetch asteroid list
-  useEffect(() => {
-    async function fetchAsteroids() {
-      try {
-        const response = await fetch("${API_URL}/asteroids");
-        if (!response.ok) throw new Error("Failed to fetch asteroids");
-        const data = await response.json();
-        setAsteroids(data);
-      } catch (e) {
-        console.error(e);
-      }
+useEffect(() => {
+  async function fetchAsteroids() {
+    try {
+      const response = await fetch(`${API_URL}/asteroids`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          // replace with whatever data you want to send to backend
+          query: "near_earth_objects",
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch asteroids");
+      const data = await response.json();
+      setAsteroids(data);
+    } catch (e) {
+      console.error(e);
     }
-    fetchAsteroids();
-  }, []);
+  }
+
+  fetchAsteroids();
+}, []);
+
 
   const resetMarkerIcon = () => setCurrentMarkerIcon(defaultTargetIcon);
 
@@ -171,29 +183,37 @@ export default function SimulatorPage() {
     else payload.asteroid_id = selectedAsteroid;
 
     try {
-      const response = await fetch("${API_URL}/analyse", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        signal,
-      });
+  const response = await fetch(`${API_URL}/analyse`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+    signal,
+  });
 
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
-      if (!isCancelled) {
-        setResults(data);
-        setCurrentMarkerIcon(impactTargetIcon); // enlarge marker after analysis
-      }
-    } catch (e) {
-      if (e.name === "AbortError") console.log("Simulation cancelled.");
-      else
-        setError("Failed to connect to the simulation server. Is it running?");
-    } finally {
-      setIsLoading(false);
-      setIsCancelled(false);
-      controllerRef.current = null;
-    }
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  if (!isCancelled) {
+    setResults(data);
+    setCurrentMarkerIcon(impactTargetIcon); // enlarge marker after analysis
+  }
+} catch (e) {
+  if (e.name === "AbortError") {
+    console.log("Simulation cancelled.");
+  } else {
+    setError("Failed to connect to the simulation server. Is it running?");
+  }
+} finally {
+  setIsLoading(false);
+  setIsCancelled(false);
+  controllerRef.current = null;
+}
+
   };
 
   const handleCancel = () => {
